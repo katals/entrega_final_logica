@@ -3,7 +3,7 @@
 # Logic - PetersonChecker
 
 ## Student Information
-- **Full Name:** Juan Carlos Muñoz Trejos and Juan José Álvarez Ocampo
+- **Full Names:** Juan Carlos Muñoz Trejos and Juan José Álvarez Ocampo
 - **Class:** MT5008 and CM0845
 - **Course:** Logic
 - **Professor:** Sergio Steven Ramirez Rico 
@@ -26,10 +26,19 @@
 
 ## Algorithm Description
 
-- Model: Two automata (process P and Q) with local locations {try, set_turn, wait, critical, exit} and shared vars want_p, want_q, turn.
-- Exploration: BFS generates all reachable interleavings from the initial state.
-- Safety: ensure never cs_p ∧ cs_q (□¬(cs_p ∧ cs_q)).
-- Liveness: detect SCC cycles where a process is forever in wait and never reaches cs (□(wait → ◇cs)); uses Tarjan.
+The verifier uses **explicit model checking** with the following approach:
+
+- **Model:** Two synchronized automata (processes P and Q) with:
+  - Local states: `{try, wait, cs}` (trying, waiting, critical section)
+  - Shared variables: `want_p`, `want_q`, `turn`
+  
+- **State Space Exploration:** BFS generates all reachable state interleavings from the initial state
+
+- **Safety Verification:** Checks that `cs_p ∧ cs_q` never occurs in any reachable state  
+  Formula: `□¬(cs_p ∧ cs_q)`
+
+- **Liveness Verification:** Detects cycles (SCCs) where a process is forever in `wait` and never reaches `cs`  
+  Formula: `□(wait → ◇cs)` using DFS-based cycle detection
 
 ## Repository Contents
 
@@ -42,12 +51,12 @@
 If you have Python already installed, you can skip this step, but if you do not have Python installed, you can install Python [here.](https://www.python.org/downloads/)
 
 After installation, verify with
-```
+```bash
 python3 --version
 ```
 
 Expected output
-```
+```bash
 Python 3.9.6 
 ```
 or instead of 3.9.6, your python version
@@ -55,18 +64,33 @@ or instead of 3.9.6, your python version
 
 #### 2. Clone the Repository
 
-```
+```bash
 # Clone the Repository
 git clone https://github.com/katals/entrega_final_logica.git
 ```
 
-```
+```bash
+# Navigate to project directory
 cd entrega_final_logica
 ```
 
 ```bash
 # Run the program
 python3 main.py
+```
+
+## Expected Output
+```bash
+Construyendo espacio de estados del algoritmo de Peterson...
+X estados alcanzables generados.
+
+[1/2] Verificando exclusión mutua...
+Exclusión mutua verificada.
+
+[2/2] Verificando vivacidad...
+Vivacidad verificada (bajo suposición de fairness implícita en la búsqueda).
+
+ ¡El algoritmo de Peterson es correcto!
 ```
 
 ## Algorithm Explanation
